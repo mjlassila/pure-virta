@@ -1,5 +1,10 @@
-for $record in //items/*[position()<100]
-  let $publication_year:=max($record//publicationDate/year)
+let $selected:=
+<records>{
+for $record in //records/*
+  let $publication_year:=
+  if (max($record//publicationDate/year) eq 2021) then
+    min($record//publicationDate/year) 
+    else (max($record//publicationDate/year))
   let $title:=data($record/title)
   let $language:=substring-after($record/language/@uri,'/dk/atira/pure/core/languages/')
   let $publication_country:=substring-after($record//keywordGroup[@logicalName="CountryOfPublishing"]//structuredKeyword/@uri,"/dk/atira/pure/researchoutput/countryofpublishing/")
@@ -18,11 +23,12 @@ for $record in //items/*[position()<100]
   let $internal_authors:=
     <internal_authors>{
     for $author in $record/personAssociations/personAssociation/person[@externalIdSource="synchronisedUnifiedPerson"]/@uuid
-    return <person>{/csv/record[uuid eq $author and primary="true"]/*}</person>
+    (:return <person>{/csv/record[uuid eq $author and primary="true"]/*}</person>}:)
+    return <uuid>{$author}</uuid>
     }</internal_authors>
   let $open_access:=data($record//keywordGroup[@logicalName="OpenAccessPublication"]//structuredKeyword[1]/@uri)
 
-(:where $publication_year > 2019:)
+where $publication_year > 2019
 
 return
 <record>
@@ -40,3 +46,6 @@ return
 <host_publication_title>{$host_title}</host_publication_title>
 <open_access>{$open_access}</open_access>
 </record>
+}</records>
+
+return $selected
