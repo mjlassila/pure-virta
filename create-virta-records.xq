@@ -1,4 +1,4 @@
-for $record in //items/*
+for $record in //items/*[position()<100]
   let $publication_year:=max($record//publicationDate/year)
   let $title:=data($record/title)
   let $language:=substring-after($record/language/@uri,'/dk/atira/pure/core/languages/')
@@ -14,15 +14,21 @@ for $record in //items/*
   let $authors:=
     string-join((for $author in $record/personAssociations/personAssociation
       let $fullname:=string-join(($author/name/lastName,$author/name/firstName),", ")
-      return $fullname),";")
+      return $fullname),"; ")
+  let $internal_authors:=
+    <internal_authors>{
+    for $author in $record/personAssociations/personAssociation/person[@externalIdSource="synchronisedUnifiedPerson"]/@uuid
+    return <person>{/csv/record[uuid eq $author and primary="true"]/*}</person>
+    }</internal_authors>
   let $open_access:=data($record//keywordGroup[@logicalName="OpenAccessPublication"]//structuredKeyword[1]/@uri)
 
-where $publication_year > 2019
+(:where $publication_year > 2019:)
 
 return
 <record>
 <title>{$title}</title>
 <authors>{$authors}</authors>
+{$internal_authors}
 <number_of_authors>{$number_of_authors}</number_of_authors>
 <publication_year>{$publication_year}</publication_year>
 <language>{$language}</language>
