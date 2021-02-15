@@ -42,9 +42,13 @@ for $record in //records/*
     if ($record/articleNumber) then
     <Artikkelinumero>{data($record/articleNumber)}</Artikkelinumero>
   
-  let $host_title:=string-join(($record/hostPublicationTitle,$record/hostPublicationSubTitle)," : ")
-  
-  let $number_of_authors:=data($record/totalNumberOfAuthors)
+  let $host_title:=
+    if ($record/hostPublicationTitle) then
+      <EmojulkaisunNimi>{string-join(($record/hostPublicationTitle,$record/hostPublicationSubTitle)," : ")}</EmojulkaisunNimi>
+   
+  let $number_of_authors:=
+    if ($record/totalNumberOfAuthors) then
+    <TekijoidenLkm>{data($record/totalNumberOfAuthors)}</TekijoidenLkm>
   
   let $authors:=
     string-join((for $author in $record/personAssociations/personAssociation
@@ -55,12 +59,12 @@ for $record in //records/*
     for $author in $record/personAssociations/personAssociation/person[@externalIdSource="synchronisedUnifiedPerson" and ../organisationalUnits/organisationalUnit[@externalIdSource="synchronisedUnifiedOrganisation"]/type[./term/text contains text {"Laitos","Hallinto","Sairaalan vastuualue"} any]]/../name
     return <person>{string-join(($author/lastName,$author/firstName),", ")}</person>),";")}</internal_authors>
   
-  
+  (: requires mapping from internal values to external organization codes, currently uses manipulated internal values :)
   let $internal_organizations:=
-  <internal_organizations>{
-    for $org in $record/personAssociations/personAssociation/person[@externalIdSource="synchronisedUnifiedPerson"]/../organisationalUnits/organisationalUnit[@externalIdSource="synchronisedUnifiedOrganisation"]/type[./term/text contains text {"Laitos","Hallinto","Sairaalan vastuualue"} any]/../name/text[@locale="fi_FI"]
-    return <org>{data($org)}</org>
-}</internal_organizations>
+  <JulkaisunOrgYksikot>{
+    for $org in distinct-values($record/personAssociations/personAssociation/person[@externalIdSource="synchronisedUnifiedPerson"]/../organisationalUnits/organisationalUnit[@externalIdSource="synchronisedUnifiedOrganisation"]/type[./term/text contains text {"Laitos","Hallinto","Sairaalan vastuualue"} any]/../../organisationalUnit/@externalId)
+    return <YksikkoKoodi>{substring-before(substring-after($org,"_"),"_")}</YksikkoKoodi>
+}</JulkaisunOrgYksikot>
 
   
   let $open_access:= <AvoinSaatavuusKoodi>{
@@ -105,7 +109,7 @@ for $record in //records/*
   
   let $self_archived_content:= if(contains($self_archived_status,"1")) then
   <RinnakkaisTallennettu>
-    <RinnakkaisTallennusOsoiteTeksti>{$record//electronicVersion[accessType/@uri contains text {'/dk/atira/pure/core/openaccesspermission/embargoed','/dk/atira/pure/core/openaccesspermission/open'} any]/link}</RinnakkaisTallennusOsoiteTeksti>
+    <RinnakkaisTallennusOsoiteTeksti>{data($record//electronicVersion[accessType/@uri contains text {'/dk/atira/pure/core/openaccesspermission/embargoed','/dk/atira/pure/core/openaccesspermission/open'} any]/link)}</RinnakkaisTallennusOsoiteTeksti>
   </RinnakkaisTallennettu>
   
   let $conference:=
@@ -116,11 +120,14 @@ for $record in //records/*
       return <ISBN>{$isbn}</ISBN> 
   
   let $jufoid:=distinct-values(functx:get-matches(substring-after(lower-case(string-join($record/bibliographicalNote/text,";")),"jufoid="),"\d{1,7}"))[1]
-  let $jufo:=if($jufoid) then
-  <JufoTunnus>{$jufoid}</JufoTunnus>
+  let $jufo:= if($jufoid) then
+    <JufoTunnus>{$jufoid}</JufoTunnus>
   
-  let $international_collab:= if ($record//structuredKeyword/@uri="/dk/atira/pure/researchoutput/typeofcopublication/internationalcopublication/1") then
-  <YhteisjulkaisuKVKytkin>1</YhteisjulkaisuKVKytkin>
+  let $international_collab:= 
+    if ($record//structuredKeyword/@uri="/dk/atira/pure/researchoutput/typeofcopublication/internationalcopublication/1") then
+      <YhteisjulkaisuKVKytkin>1</YhteisjulkaisuKVKytkin>
+    else if($record//structuredKeyword/@uri="/dk/atira/pure/researchoutput/typeofcopublication/internationalcopublication/0") then
+      <YhteisjulkaisuKVKytkin>0</YhteisjulkaisuKVKytkin>
   
   let $company_collab:= 
   if ($record//structuredKeyword/@uri="/dk/atira/pure/researchoutput/copublicationwithacompany/1") then
@@ -149,14 +156,11 @@ return
   <OrganisaatioTunnus>99999</OrganisaatioTunnus>
   <JulkaisunTilaKoodi>2</JulkaisunTilaKoodi>
   <JulkaisunOrgTunnus>{$internal_identifier}</JulkaisunOrgTunnus>
-  <JulkaisunOrgYksikot>
-    <YksikkoKoodi>H918</YksikkoKoodi>
-    <YksikkoKoodi>H60</YksikkoKoodi>
-  </JulkaisunOrgYksikot>
+  {$internal_organizations}
   <JulkaisuVuosi>{$publication_year}</JulkaisuVuosi>
   <JulkaisunNimi>{$title}</JulkaisunNimi>
   <TekijatiedotTeksti>{$authors}</TekijatiedotTeksti>
-  <TekijoidenLkm>{$number_of_authors}</TekijoidenLkm>
+  {$number_of_authors}
   {$pages}
   {$isbns[position()<3]}
   {$jufo}
@@ -200,5 +204,4 @@ return
 }</Julkaisut>
 
 return $selected
-
 
