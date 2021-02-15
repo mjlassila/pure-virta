@@ -1,3 +1,4 @@
+
 import module namespace functx = 'http://www.functx.com';
 
 let $selected:=
@@ -54,10 +55,16 @@ for $record in //records/*
     string-join((for $author in $record/personAssociations/personAssociation
       let $fullname:=string-join(($author/name/lastName,$author/name/firstName),", ")
       return $fullname),"; ")
-  let $internal_authors:=<internal_authors>{string-join((
+  let $internal_authors:=
+    <Tekijat>{
     
     for $author in $record/personAssociations/personAssociation/person[@externalIdSource="synchronisedUnifiedPerson" and ../organisationalUnits/organisationalUnit[@externalIdSource="synchronisedUnifiedOrganisation"]/type[./term/text contains text {"Laitos","Hallinto","Sairaalan vastuualue"} any]]/../name
-    return <person>{string-join(($author/lastName,$author/firstName),", ")}</person>),";")}</internal_authors>
+    return 
+    <Tekija>
+      <Sukunimi>{data($author/lastName)}</Sukunimi>
+      <Etunimet>{data($author/firstName)}</Etunimet>
+    </Tekija>
+    }</Tekijat>
   
   (: requires mapping from internal values to external organization codes, currently uses manipulated internal values :)
   let $internal_organizations:=
@@ -170,7 +177,7 @@ return
   {$volume}
   {$number}
   {$conference}
-  <EmojulkaisunNimi>{$host_title}</EmojulkaisunNimi>
+  {$host_title}
   <JulkaisutyyppiKoodi>{$okm_class}</JulkaisutyyppiKoodi>
   {$statgroups}
   {$international_collab}
@@ -183,25 +190,11 @@ return
   {$doi}
   {$permanent_url}
   <LahdetietokannanTunnus>Scopus:85043780753</LahdetietokannanTunnus>
-        <Tekijat>
-            <Tekija>
-                <Sukunimi>Wang</Sukunimi>
-                <Etunimet>Yan</Etunimet>
-                <ORCID>0000-0002-5075-6039</ORCID>
-            </Tekija>
-            <Tekija>
-                <Sukunimi>Tirri</Sukunimi>
-                <Etunimet>Kirsi</Etunimet>
-                <ORCID>0000-0001-5847-344X</ORCID>
-            </Tekija>
-            <Tekija>
-                <Sukunimi>Lavonen</Sukunimi>
-                <Etunimet>Jari</Etunimet>
-                <ORCID>0000-0003-2781-7953</ORCID>
-            </Tekija>
-        </Tekijat>
-    </Julkaisu>
+  {$internal_authors}
+  </Julkaisu>
 }</Julkaisut>
 
 return $selected
+
+
 
