@@ -1,4 +1,5 @@
-
+xquery version "1.0";
+declare namespace julkaisut = "urn:mace:funet.fi:julkaisut/2015/03/01";
 import module namespace functx = 'http://www.functx.com';
 
 let $selected:=
@@ -13,7 +14,10 @@ for $record in //records/*
   
   let $language:=substring-before(substring-after($record/language/@uri,'/dk/atira/pure/core/languages/'),"_")
   
-  let $publication_country:=substring-after($record//keywordGroup[@logicalName="CountryOfPublishing"]//structuredKeyword/@uri,"/dk/atira/pure/researchoutput/countryofpublishing/")
+  let $publication_country:=
+    if ($record//keywordGroup[@logicalName="CountryOfPublishing"]) then
+    <JulkaisumaaKoodi>{substring-after($record//keywordGroup[@logicalName="CountryOfPublishing"]//structuredKeyword/@uri,"/dk/atira/pure/researchoutput/countryofpublishing/")}</JulkaisumaaKoodi>
+ 
   
   let $statgroups:=
   <TieteenalaKoodit>{
@@ -87,32 +91,38 @@ for $record in //records/*
   
   let $host_editors:=
     if ($record/hostPublicationEditors) then
-    <host_publication_editors>{
+    <EmojulkaisunToimittajatTeksti>{
     string-join(
   (
     for $editor in $record//hostPublicationEditor
       return string-join(($editor/lastName, $editor/firstName),", ")
   ), ";")
-}</host_publication_editors>
+}</EmojulkaisunToimittajatTeksti>
 
   let $journal_series_title:=
-    if ($record/publicationSeries) then
-      <journal_series_title>{data($record/publicationSeries/publicationSerie[1]/name)}</journal_series_title>
+     if ($record/publicationSeries) then
+      <LehdenNimi>{data($record/publicationSeries/publicationSerie[1]/name)}</LehdenNimi>
     else if ($record/journalAssociation) then
-    <journal_series_title>{data($record/journalAssociation/title)}</journal_series_title>
+    <LehdenNimi>{data($record/journalAssociation/title)}</LehdenNimi>
     
   let $issns:=
-    if ($record/publicationSeries/publicationSerie/issn or $record/journalAssociation/issn) then
-      <ISSN>{data($record/*/issn[1])}</ISSN>
-   else if ($record/publicationSeries/publicationSerie/electronicIssn or $record/journalAssociation/electronicIssn) then
-      <ISSN>{data($record/*/electronicIssn[1])}</ISSN>
+    if ($record/publicationSeries/publicationSerie/issn) then
+      <ISSN>{data($record/publicationSeries/publicationSerie/issn)}</ISSN>
+    else if  ($record/journalAssociation/issn) then
+      <ISSN>{data($record/journalAssociation/issn)}</ISSN>
+    else if ($record/publicationSeries/publicationSerie/electronicIssn) then
+      <ISSN>{data($record/publicationSeries/publicationSerie/electronicIssn)}</ISSN>
+    else if  ($record/journalAssociation/electronicIssn) then
+      <ISSN>{data($record/journalAssociation/electronicIssn)}</ISSN>
    
   let $internal_identifier:=data($record/@uuid)
   
   let $doi:=if($record//electronicVersion[@type="wsElectronicVersionDoiAssociation"][1]/doi) then
     <DOI>{substring-after($record//electronicVersion[@type="wsElectronicVersionDoiAssociation"][1]/doi[1],(".org/"))}</DOI>
     
-  let $self_archived_status:=substring-after($record//keywordGroup[@logicalName="SelfArchivedPublication"]/keywordContainers/keywordContainer[1]/structuredKeyword/@uri,"/dk/atira/pure/researchoutput/selfarchivedpublication/")
+  let $self_archived_status:=
+  if	($record//keywordGroup[@logicalName="SelfArchivedPublication"]) then
+  <RinnakkaistallennettuKytkin>{substring-after($record//keywordGroup[@logicalName="SelfArchivedPublication"]/keywordContainers/keywordContainer[1]/structuredKeyword/@uri,"/dk/atira/pure/researchoutput/selfarchivedpublication/")}</RinnakkaistallennettuKytkin>
   
   let $self_archived_content:= if(contains($self_archived_status,"1")) then
   <RinnakkaisTallennettu>
@@ -146,21 +156,27 @@ for $record in //records/*
   
   let $permanent_url:=if($publisher_url) then
     <PysyvaOsoiteTeksti>{data($publisher_url/doi)}</PysyvaOsoiteTeksti>
+    else if ($self_archived_content) then
+    <PysyvaOsoiteTeksti>{data($self_archived_content)}</PysyvaOsoiteTeksti>
   
   let $international_publisher:= 
     if ($record//structuredKeyword/@uri="/dk/atira/pure/researchoutput/internationalpublisher/1") then
      <JulkaisunKansainvalisyysKytkin>1</JulkaisunKansainvalisyysKytkin>
    else if ($record//structuredKeyword/@uri="/dk/atira/pure/researchoutput/internationalpublisher/0") then
       <JulkaisunKansainvalisyysKytkin>0</JulkaisunKansainvalisyysKytkin>
+  
+  let $publisher:=if($record/publisher[1]/name/text) then
+    <KustantajanNimi>{data($record/publisher[1]/name/text)}</KustantajanNimi>
+    
    
     
     
 
-where $publication_year > 2019 and $record/workflow/@workflowStep="validated"
-
+where $publication_year > 2019 and $record/workflow/@workflowStep="validated" and $okm_class != "noteligible"
+(:PSHP organization code 08265978:)
 return
 <Julkaisu>
-  <OrganisaatioTunnus>99999</OrganisaatioTunnus>
+  <OrganisaatioTunnus>10122</OrganisaatioTunnus>
   <JulkaisunTilaKoodi>2</JulkaisunTilaKoodi>
   <JulkaisunOrgTunnus>{$internal_identifier}</JulkaisunOrgTunnus>
   {$internal_organizations}
@@ -171,13 +187,15 @@ return
   {$pages}
   {$isbns[position()<3]}
   {$jufo}
-  <JulkaisumaaKoodi>{$publication_country}</JulkaisumaaKoodi>
-  <LehdenNimi>{data($journal_series_title)}</LehdenNimi>
+  {$publication_country}
+  {$journal_series_title}
   {$issns[position()<3]}
   {$volume}
   {$number}
   {$conference}
+  {$publisher}
   {$host_title}
+  {$host_editors}
   <JulkaisutyyppiKoodi>{$okm_class}</JulkaisutyyppiKoodi>
   {$statgroups}
   {$international_collab}
@@ -185,7 +203,7 @@ return
   <JulkaisunKieliKoodi>{$language}</JulkaisunKieliKoodi>
   {$open_access}
   {$company_collab}
-  <RinnakkaistallennettuKytkin>{$self_archived_status}</RinnakkaistallennettuKytkin>
+  {$self_archived_status}
   {$self_archived_content}
   {$doi}
   {$permanent_url}
@@ -194,7 +212,9 @@ return
   </Julkaisu>
 }</Julkaisut>
 
-return $selected
+return file:write("/Users/ccmala/Documents/2021/pure-dataload/tunicris-to-virta.xml",$selected)
+
+
 
 
 
