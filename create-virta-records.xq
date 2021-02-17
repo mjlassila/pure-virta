@@ -903,7 +903,7 @@ for $record in //records/*
     '1'
     else if ($record//structuredKeyword/@uri="/dk/atira/pure/researchoutput/openaccesspublication/0") then
     '0'
-    else if ($record//structuredKeyword/@uri="/dk/atira/pure/researchoutput/openaccesspublication/0=2") then
+    else if ($record//structuredKeyword/@uri="/dk/atira/pure/researchoutput/openaccesspublication/2") then
     '2'
     else '0'
     }</AvoinSaatavuusKoodi>
@@ -940,14 +940,16 @@ for $record in //records/*
   let $doi:=if($record//electronicVersion[@type="wsElectronicVersionDoiAssociation"][1]/doi) then
     <DOI>{substring-after($record//electronicVersion[@type="wsElectronicVersionDoiAssociation"][1]/doi[1],(".org/"))}</DOI>
     
-  let $self_archived_status:=
-  if	($record//keywordGroup[@logicalName="SelfArchivedPublication"]) then
+  let $self_archived_status:= substring-after($record//keywordGroup[@logicalName="SelfArchivedPublication"]/keywordContainers/keywordContainer[1]/structuredKeyword/@uri,"/dk/atira/pure/researchoutput/selfarchivedpublication/")
+  
+  let $self_archived_switch:=
+    if($self_archived_status contains text {"0","1"} any ) then
   <RinnakkaistallennettuKytkin>{substring-after($record//keywordGroup[@logicalName="SelfArchivedPublication"]/keywordContainers/keywordContainer[1]/structuredKeyword/@uri,"/dk/atira/pure/researchoutput/selfarchivedpublication/")}</RinnakkaistallennettuKytkin>
   
   let $self_archived_content:= if(contains($self_archived_status,"1")) then
-  <RinnakkaisTallennettu>
-    <RinnakkaisTallennusOsoiteTeksti>{data($record//electronicVersion[accessType/@uri contains text {'/dk/atira/pure/core/openaccesspermission/embargoed','/dk/atira/pure/core/openaccesspermission/open'} any]/link)}</RinnakkaisTallennusOsoiteTeksti>
-  </RinnakkaisTallennettu>
+  <Rinnakkaistallennettu>
+    <RinnakkaistallennusOsoiteTeksti>{data($record//electronicVersion[accessType/@uri contains text {'/dk/atira/pure/core/openaccesspermission/embargoed','/dk/atira/pure/core/openaccesspermission/open'} any]/link)}</RinnakkaistallennusOsoiteTeksti>
+  </Rinnakkaistallennettu>
   
   let $conference:=
     if($record/event[type/@uri="/dk/atira/pure/event/eventtypes/event/conference"]/name/text) then
@@ -1023,7 +1025,7 @@ return
   {$language}
   {$open_access}
   {$company_collab}
-  {$self_archived_status}
+  {$self_archived_switch}
   {$self_archived_content}
   {$doi}
   {$permanent_url}
