@@ -1,6 +1,121 @@
 xquery version "1.0";
 declare namespace julkaisut = "urn:mace:funet.fi:julkaisut/2015/03/01";
 import module namespace functx = 'http://www.functx.com';
+import module namespace isbn = "http://github.com/holmesw/isbn" at "isbn.xqm";
+
+
+
+declare function local:check-isbn($isbn) {
+  let $isbn_to_check:=isbn:prepare-isbn($isbn)
+  let $check_digit := substring(
+    $isbn_to_check, string-length($isbn_to_check),1)
+  let $valid_isbn:=
+    if(string-length($isbn_to_check) eq 10) then
+      isbn:isbn-10-check-digit($isbn_to_check) eq $check_digit
+     else if (string-length($isbn_to_check) eq 13) then
+      isbn:isbn-13-check-digit($isbn_to_check) eq $check_digit
+  return if($valid_isbn) then
+    $isbn
+    else(
+       "ISBN ERROR  -- " || $isbn
+    )
+};
+
+declare function local:check-stat-code($stat_code) {
+ let $stat_codes:=(
+"1",
+"111",
+"112",
+"113",
+"114",
+"115",
+"116",
+"117",
+"1171",
+"1172",
+"118",
+"1181",
+"1182",
+"1183",
+"1184",
+"119",
+"2",
+"211",
+"212",
+"213",
+"214",
+"215",
+"216",
+"217",
+"218",
+"219",
+"220",
+"221",
+"222",
+"3",
+"311",
+"3111",
+"3112",
+"312",
+"3121",
+"3122",
+"3123",
+"3124",
+"3125",
+"3126",
+"313",
+"314",
+"3141",
+"3142",
+"315",
+"316",
+"317",
+"318",
+"319",
+"4",
+"411",
+"4111",
+"4112",
+"412",
+"413",
+"414",
+"415",
+"5",
+"511",
+"512",
+"513",
+"514",
+"5141",
+"5142",
+"515",
+"516",
+"517",
+"518",
+"519",
+"520",
+"6",
+"611",
+"612",
+"6121",
+"6122",
+"613",
+"6131",
+"6132",
+"614",
+"615",
+"616",
+"9",
+"999")
+  
+  return
+    if (index-of($stat_codes,$stat_code)) then
+    $stat_code
+    else(
+       "STAT CODE ERROR  -- " || $stat_code
+    )
+};
+
+
 
 (: Map structure is substantially faster for looking up organisation codes
    compared to database lookup :)
@@ -839,7 +954,7 @@ for $record in //records/*
     for $uri in $record//keywordGroup[@logicalName="ResearchoutputFieldOfScienceStatisticsFinland"]//structuredKeyword/@uri
       count $c
       let $code:=replace(replace(substring-after($uri,"/dk/atira/pure/keywords/fieldofsciencestatisticsfinland"),"fieldofsciencestatisticsfinland",""),"/","")
-      return <TieteenalaKoodi JNro="{$c}">{$code}</TieteenalaKoodi>
+      return <TieteenalaKoodi JNro="{$c}">{local:check-stat-code($code)}</TieteenalaKoodi>
   }</TieteenalaKoodit>
   
   let $international_pub:=substring-after($record//keywordGroup[@logicalName="InternationalPublication"]//structuredKeyword/@uri,"/dk/atira/pure/researchoutput/internationalpublication/")
@@ -874,6 +989,10 @@ for $record in //records/*
     string-join((for $author in $record/personAssociations/personAssociation
       let $fullname:=string-join(($author/name/lastName,$author/name/firstName),", ")
       return $fullname),"; ")
+  let $trimmed_authors:=if(string-length($authors) > 800) then
+      substring($authors,1,794) || ' [...]'
+      else($authors) 
+      
   let $internal_authors:=
     <Tekijat>{
     
@@ -956,10 +1075,10 @@ for $record in //records/*
       <KonferenssinNimi>{data($record/event[type/@uri="/dk/atira/pure/event/eventtypes/event/conference"]/name/text)}</KonferenssinNimi>
   
   let $isbns:=for $isbn in distinct-values(($record/isbns/isbn, $record/electronicIsbns/electronicIsbn))
-      return <ISBN>{$isbn}</ISBN> 
+      return <ISBN>{local:check-isbn($isbn)}</ISBN> 
   
   let $jufoid:=distinct-values(functx:get-matches(substring-after(lower-case(string-join($record/bibliographicalNote/text,";")),"jufoid="),"\d{1,7}"))[1]
-  let $jufo:= if($jufoid) then
+  let $jufo:= if(string-length($jufoid) <=5 ) then
     <JufoTunnus>{$jufoid}</JufoTunnus>
   
   let $international_collab:= 
@@ -989,6 +1108,9 @@ for $record in //records/*
   
   let $publisher:=if($record/publisher[1]/name/text) then
     <KustantajanNimi>{data($record/publisher[1]/name/text)}</KustantajanNimi>
+  
+  let $sourcedb_id:=if($record//additionalExternalIds/id[@idSource="Scopus"]) then
+    <LahdetietokannanTunnus>{"Scopus:"||$record//additionalExternalIds/id[@idSource="Scopus"][1]}</LahdetietokannanTunnus>
     
    
     
@@ -1004,7 +1126,7 @@ return
   {$internal_organizations}
   <JulkaisuVuosi>{$publication_year}</JulkaisuVuosi>
   <JulkaisunNimi>{$title}</JulkaisunNimi>
-  <TekijatiedotTeksti>{$authors}</TekijatiedotTeksti>
+  <TekijatiedotTeksti>{$trimmed_authors}</TekijatiedotTeksti>
   {$number_of_authors}
   {$pages}
   {$isbns[position()<3]}
@@ -1029,9 +1151,11 @@ return
   {$self_archived_content}
   {$doi}
   {$permanent_url}
-  <LahdetietokannanTunnus>Scopus:85043780753</LahdetietokannanTunnus>
+  {$sourcedb_id}
   {$internal_authors}
   </Julkaisu>
 }</Julkaisut>
 
 return file:write("/Users/ccmala/Documents/2021/pure-dataload/tunicris-to-virta.xml",$selected)
+
+
