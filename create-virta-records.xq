@@ -1109,8 +1109,10 @@ for $record in //records/*
   let $publisher:=if($record/publisher[1]/name/text) then
     <KustantajanNimi>{data($record/publisher[1]/name/text)}</KustantajanNimi>
   
-  let $sourcedb_id:=if($record//additionalExternalIds/id[@idSource="Scopus"]) then
-    <LahdetietokannanTunnus>{"Scopus:"||$record//additionalExternalIds/id[@idSource="Scopus"][1]}</LahdetietokannanTunnus>
+  let $sourcedb_ids:=
+    if ($record//additionalExternalIds/id[@idSource contains text {"Scopus","WOS"} any]) then
+      <LahdetietokannanTunnus>{string-join((for $id in $record//additionalExternalIds/id[@idSource contains text {"Scopus","WOS"} any]
+      return $id/@idSource ||':'|| $id),';' )}</LahdetietokannanTunnus>
     
    
     
@@ -1151,7 +1153,7 @@ return
   {$self_archived_content}
   {$doi}
   {$permanent_url}
-  {$sourcedb_id}
+  {$sourcedb_ids}
   {$internal_authors}
   </Julkaisu>
 }</Julkaisut>
