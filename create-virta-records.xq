@@ -21,6 +21,14 @@ declare function local:check-isbn($isbn) {
     )
 };
 
+declare function local:check-doi($doi) {
+  if(starts-with(distinct-values($doi),"https://doi.org/10.")) then
+  $doi
+  else(
+    "DOI ERROR -- "|| distinct-values($doi)
+  )
+};
+
 declare function local:check-stat-code($stat_code) {
  let $stat_codes:=(
 "1",
@@ -1095,10 +1103,12 @@ for $record in //records/*
   
   let $publisher_url:=$record//electronicVersion[versionType/@uri="/dk/atira/pure/researchoutput/electronicversion/versiontype/publishersversion"]
   
-  let $permanent_url:=if($publisher_url) then
-    <PysyvaOsoiteTeksti>{data($publisher_url/doi)}</PysyvaOsoiteTeksti>
-    else if ($self_archived_content) then
-    <PysyvaOsoiteTeksti>{data($self_archived_content)}</PysyvaOsoiteTeksti>
+  let $permanent_url:=if($publisher_url/doi) then
+    <PysyvaOsoiteTeksti>{data(local:check-doi($publisher_url/doi))}</PysyvaOsoiteTeksti>
+    else if ($publisher_url/link) then
+    <PysyvaOsoiteTeksti>{data($publisher_url/link)}</PysyvaOsoiteTeksti>
+    else if ($self_archived_content/RinnakkaistallennusOsoiteTeksti) then
+     <PysyvaOsoiteTeksti>{data($self_archived_content/RinnakkaistallennusOsoiteTeksti)}</PysyvaOsoiteTeksti>
   
   let $international_publisher:= 
     if ($record//structuredKeyword/@uri="/dk/atira/pure/researchoutput/internationalpublisher/1") then
@@ -1158,6 +1168,6 @@ return
   </Julkaisu>
 }</Julkaisut>
 
-return file:write("/Users/ccmala/Documents/2021/pure-dataload/tunicris-to-virta.xml",$selected)
+return file:write("/Users/ccmala/Documents/2021/pure-dataload/pshp-to-virta.xml",$selected)
 
 
