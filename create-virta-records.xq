@@ -760,10 +760,14 @@ for $record in //records/*
     if ($record/totalNumberOfAuthors) then
     <TekijoidenLkm>{data($record/totalNumberOfAuthors)}</TekijoidenLkm>
   
+  let $author_collaborations:= 
+    for $collab in $record/personAssociations/personAssociation/authorCollaboration
+      return data($collab/name/text[1])
+  
   let $authors:=
-    string-join((for $author in $record/personAssociations/personAssociation
+    string-join(((for $author in $record/personAssociations/personAssociation[not(empty(name/lastName))]
       let $fullname:=string-join(($author/name/lastName,$author/name/firstName),", ")
-      return $fullname),"; ")
+      return $fullname),$author_collaborations),"; ")
   let $trimmed_authors:=if(string-length($authors) > 800) then
       substring($authors,1,794) || ' [...]'
       else($authors) 
