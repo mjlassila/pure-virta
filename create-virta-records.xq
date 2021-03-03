@@ -131,52 +131,52 @@ declare function local:check-stat-code($stat_code) {
 (: Map structure is substantially faster for looking up organisation codes
    compared to database lookup :)
 let $organisations:=map:merge((
-map:entry("AKU_hospitaldivision_1994-01-01","K"),
-map:entry("AKUH_hospitaldepartment_2009-01-01",46),
-map:entry("APSY_hospitaldepartment_1997-01-01","JV32"),
-map:entry("ÄS_hospital_2008-01-01","JS3"),
-map:entry("ÄS01_hospitaldepartment_2008-01-01","JV63"),
-map:entry("ASER_hospitaldepartment_1997-01-01","novalue"),
-map:entry("COXA_hospitaldivision_2014-01-01","JT113"),
-map:entry("COXA01_hospitaldepartment_2014-01-01","JV113"),
-map:entry("EAPU_hospitaldepartment_2009-01-01",35),
-map:entry("EKA_hospitaldepartment_2005-01-01",31),
-map:entry("ENSI_hospitaldistrict_2005-01-01","JV51"),
-map:entry("EPSH01_hospitaldepartment_2008-01-01","JV64"),
-map:entry("EPSH02_hospitaldepartment_2008-01-01","JV65"),
-map:entry("EPSH03_hospitaldepartment_2008-01-01","JV66"),
-map:entry("EPSH04_hospitaldepartment_2008-01-01","JV67"),
-map:entry("EPSH05_hospitaldepartment_2008-01-01","JV68"),
-map:entry("EPSH06_hospitaldepartment_2008-01-01","JV131"),
-map:entry("EPSH07_hospitaldepartment_2008-01-01","JV70"),
-map:entry("EPSHP_hospitaldistrict_2008-01-01","EPSHP"),
-map:entry("ERHA_hospitaldepartment_2016-01-01","V3"),
-map:entry("FLAB_hospitaldivision_2004-01-01","JT20"),
-map:entry("FYSI_hospitaldepartment_1997-01-01","JV25"),
-map:entry("FYY_hospitaldepartment_2005-01-01",58),
-map:entry("GAST_hospitaldepartment_2005-01-01",19),
-map:entry("HASA01_hospitaldepartment_1994-01-01","JV98"),
-map:entry("HEPA_hospitaldepartment_2016-01-01",93),
-map:entry("HOIV_hospitaldepartment_2014-01-01","novalue"),
-map:entry("KFI_hospitaldepartment_2005-01-01",44),
-map:entry("KHKS_hospital_2008-01-01","JS4"),
-map:entry("KHKS01_hospitaldepartment_2008-01-01","JV71"),
-map:entry("KHKS02_hospitaldepartment_2008-01-01","JV72"),
-map:entry("KHKS04_hospitaldepartment_2008-01-01","JV76"),
-map:entry("KHKS05_hospitaldepartment_2008-01-01","JV77"),
-map:entry("KHKS06_hospitaldepartment_2008-01-01","JV118"),
-map:entry("KHSH01_hospitaldepartment_2009-01-01","novalue"),
-map:entry("KHSH02_hospitaldepartment_2009-01-01","novalue"),
-map:entry("KHSH04_hospitaldepartment_2009-01-01","novalue"),
-map:entry("KHSH05_hospitaldepartment_2008-01-01","novalue"),
-map:entry("KHSH06_hospitaldepartment_2008-01-01","novalue"),
-map:entry("KHSHP_hospitaldistrict_2008-01-01","KHSHP"),
-map:entry("KIHA_hospitaldepartment_2009-01-01",24),
-map:entry("KIR_hospitaldepartment_2005-01-01",10),
-map:entry("KKEM_hospitaldepartment_2004-01-01","JV19"),
-map:entry("KMIK_hospitaldepartment_2004-01-01","JV20"),
-map:entry("KNEF_hospitaldepartment_2005-01-01",45),
-map:entry("KORT_hospitaldepartment_1997-01-01","JV7"),
+map:entry("AKU_hospitaldivision_1994-01-01","08265978"),
+map:entry("AKUH_hospitaldepartment_2009-01-01","08265978"),
+map:entry("APSY_hospitaldepartment_1997-01-01","08265978"),
+map:entry("ÄS_hospital_2008-01-01","08265978"),
+map:entry("ÄS01_hospitaldepartment_2008-01-01","08265978"),
+map:entry("ASER_hospitaldepartment_1997-01-01","08265978"),
+map:entry("COXA_hospitaldivision_2014-01-01","08265978"),
+map:entry("COXA01_hospitaldepartment_2014-01-01","08265978"),
+map:entry("EAPU_hospitaldepartment_2009-01-01","08265978"),
+map:entry("EKA_hospitaldepartment_2005-01-01","08265978"),
+map:entry("ENSI_hospitaldistrict_2005-01-01","08265978"),
+map:entry("EPSH01_hospitaldepartment_2008-01-01","08265978"),
+map:entry("EPSH02_hospitaldepartment_2008-01-01","08265978"),
+map:entry("EPSH03_hospitaldepartment_2008-01-01","08265978"),
+map:entry("EPSH04_hospitaldepartment_2008-01-01","08265978"),
+map:entry("EPSH05_hospitaldepartment_2008-01-01","08265978"),
+map:entry("EPSH06_hospitaldepartment_2008-01-01","08265978"),
+map:entry("EPSH07_hospitaldepartment_2008-01-01","08265978"),
+map:entry("EPSHP_hospitaldistrict_2008-01-01","08265978"),
+map:entry("ERHA_hospitaldepartment_2016-01-01","08265978"),
+map:entry("FLAB_hospitaldivision_2004-01-01","08265978"),
+map:entry("FYSI_hospitaldepartment_1997-01-01","08265978"),
+map:entry("FYY_hospitaldepartment_2005-01-01","08265978"),
+map:entry("GAST_hospitaldepartment_2005-01-01","08265978"),
+map:entry("HASA01_hospitaldepartment_1994-01-01","08265978"),
+map:entry("HEPA_hospitaldepartment_2016-01-01","08265978"),
+map:entry("HOIV_hospitaldepartment_2014-01-01","08265978"),
+map:entry("KFI_hospitaldepartment_2005-01-01","08265978"),
+map:entry("KHKS_hospital_2008-01-01","08265978"),
+map:entry("KHKS01_hospitaldepartment_2008-01-01","08265978"),
+map:entry("KHKS02_hospitaldepartment_2008-01-01","08265978"),
+map:entry("KHKS04_hospitaldepartment_2008-01-01","08265978"),
+map:entry("KHKS05_hospitaldepartment_2008-01-01","08265978"),
+map:entry("KHKS06_hospitaldepartment_2008-01-01","08265978"),
+map:entry("KHSH01_hospitaldepartment_2009-01-01","08265978"),
+map:entry("KHSH02_hospitaldepartment_2009-01-01","08265978"),
+map:entry("KHSH04_hospitaldepartment_2009-01-01","08265978"),
+map:entry("KHSH05_hospitaldepartment_2008-01-01","08265978"),
+map:entry("KHSH06_hospitaldepartment_2008-01-01","08265978"),
+map:entry("KHSHP_hospitaldistrict_2008-01-01","08265978"),
+map:entry("KIHA_hospitaldepartment_2009-01-01","08265978"),
+map:entry("KIR_hospitaldepartment_2005-01-01","08265978"),
+map:entry("KKEM_hospitaldepartment_2004-01-01","08265978"),
+map:entry("KMIK_hospitaldepartment_2004-01-01","08265978"),
+map:entry("KNEF_hospitaldepartment_2005-01-01","08265978"),
+map:entry("KORT_hospitaldepartment_1997-01-01","08265978"),
 map:entry("LAI_101020_2019-01-30","1010"),
 map:entry("LAI_101030_2019-01-30","1010"),
 map:entry("LAI_101040_2019-01-30","1010"),
@@ -244,15 +244,15 @@ map:entry("PAL_5030_2018-10-01","6140"),
 map:entry("PAL_5020_2018-10-01","5120"),
 map:entry("PAL_2010_2018-10-01","5140"),
 map:entry("PAL_6020_2018-10-01","6120"),
-map:entry("PALL_hospitaldepartment_2000-01-01","JV38"),
-map:entry("PATO_hospitaldepartment_2004-01-01","JV24"),
-map:entry("PHKS_hospitaldepartment_2015-01-01","JS5"),
-map:entry("PHKS01_hospitaldepartment_2015-01-01","JV78"),
-map:entry("PHKS02_hospital_2015-01-01","JV79"),
-map:entry("PHSO01_hospitaldepartment_2009-01-01","novalue"),
-map:entry("PPSHP_hospital_2015-01-01","PPSHP"),
-map:entry("PSGY_hospitaldepartment_1997-01-01","JV35"),
-map:entry("PSHP_hospitaldistrict_1994-01-01","PSHP"),
+map:entry("PALL_hospitaldepartment_2000-01-01","08265978"),
+map:entry("PATO_hospitaldepartment_2004-01-01","08265978"),
+map:entry("PHKS_hospitaldepartment_2015-01-01","08265978"),
+map:entry("PHKS01_hospitaldepartment_2015-01-01","08265978"),
+map:entry("PHKS02_hospital_2015-01-01","08265978"),
+map:entry("PHSO01_hospitaldepartment_2009-01-01","08265978"),
+map:entry("PPSHP_hospital_2015-01-01","08265978"),
+map:entry("PSGY_hospitaldepartment_1997-01-01","08265978"),
+map:entry("PSHP_hospitaldistrict_1994-01-01","08265978"),
 map:entry("PSHP01_hospitaldepartment_2008-01-01","JV80"),
 map:entry("PSHP02_hospitaldepartment_2008-01-01","JV81"),
 map:entry("PSHP03_hospitaldepartment_2016-01-01","JV82"),
@@ -783,17 +783,30 @@ for $record in //records/*
     </Tekija>
     }</Tekijat>
   
-  (: requires mapping from internal values to external organization codes, currently uses manipulated internal values :)
-  let $internal_organizations:=
+  
+  let $initial_internal_organizations:=
   <JulkaisunOrgYksikot>{
-    for $org in distinct-values($record/personAssociations/personAssociation/person[@externalIdSource="synchronisedUnifiedPerson"]/../organisationalUnits/organisationalUnit[@externalIdSource="synchronisedUnifiedOrganisation" and type[term/text contains text {"Laitos","Hallinto","Sairaalan vastuualue"} any]]/@externalId)
+   for $org in distinct-values($record/personAssociations/personAssociation/person[@externalIdSource="synchronisedUnifiedPerson"]/../organisationalUnits/organisationalUnit[@externalIdSource="synchronisedUnifiedOrganisation" and type[term/text contains text {"Laitos","Hallinto"} any]]/@externalId)
     
     return if ($organisations($org)) then 
     <YksikkoKoodi>{$organisations($org)}</YksikkoKoodi>
     else(
        <YksikkoKoodi>{$org || "-missing-org-number"}</YksikkoKoodi>
     )
-}</JulkaisunOrgYksikot>
+    }
+    {for $org in distinct-values($record/personAssociations/personAssociation/person[@externalIdSource="synchronisedUnifiedPerson"]/../organisationalUnits/organisationalUnit[@externalIdSource="synchronisedUnifiedOrganisation" and type[term/text contains text {"Sairaalan vastuualue"} any]]/@externalId)
+    
+    return
+    <YksikkoKoodi>08265978</YksikkoKoodi>
+   
+  }</JulkaisunOrgYksikot>
+  
+  let $internal_organizations:=
+  <JulkaisunOrgYksikot> {
+    for $org in distinct-values($initial_internal_organizations/YksikkoKoodi)
+    return <YksikkoKoodi>{$org}</YksikkoKoodi>
+  }</JulkaisunOrgYksikot>
+    
 
  let $internal_organisation_codes:= for $org in distinct-values($record/personAssociations/personAssociation/person[@externalIdSource="synchronisedUnifiedPerson"]/../organisationalUnits/organisationalUnit[type[term/text contains text {"Laitos","Hallinto","Sairaalan vastuualue"} any]]/@externalId)
  return $org
