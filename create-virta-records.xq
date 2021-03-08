@@ -3,7 +3,8 @@ declare namespace julkaisut = "urn:mace:funet.fi:julkaisut/2015/03/01";
 import module namespace functx = 'http://www.functx.com';
 import module namespace isbn = "http://github.com/holmesw/isbn" at "isbn.xqm";
 
-declare variable $organisation:="PSHP";
+declare variable $organisation external:="TAU";
+declare variable $path external:="/Users/ccmala/Documents/2021/pure-dataload/";
 
 declare function local:check-isbn($isbn) {
   let $isbn_to_check:=isbn:prepare-isbn($isbn)
@@ -127,6 +128,15 @@ declare function local:check-stat-code($stat_code) {
 };
 
 
+let $filename:=map:merge((
+  map:entry("PSHP","virta-pshp.xml"),
+  map:entry("TAU","virta-tau.xml")
+))
+
+let $org_code:=map:merge((
+  map:entry("PSHP","08265978"),
+  map:entry("TAU","10122")
+))
 
 (: Map structure is substantially faster for looking up organisation codes
    compared to database lookup :)
@@ -194,6 +204,8 @@ map:entry("LAI_104020_2019-01-01","1040"),
 map:entry("LAI_104030_2019-01-01","1040"),
 map:entry("LAI_105020_2019-01-01","1050"),
 map:entry("LAI_105030_2019-01-01","1050"),
+map:entry("LAI_105020_2019-01-22","1050"),
+map:entry("LAI_105030_2019-01-22","1050"),
 map:entry("LAI_106020_2019-01-01","1060"),
 map:entry("LAI_106030_2019-01-01","1060"),
 map:entry("LAI_106040_2019-01-01","1060"),
@@ -927,13 +939,11 @@ for $org in distinct-values($record/personAssociations/personAssociation/person[
     
     
 
-where $publication_year > 2019 and $record/workflow/@workflowStep="validated" and $okm_class contains text {'A1', 'A2', 'A3', 'A4', 'B1', 'B2', 'B3', 'C1', 'C2', 'D1', 'D2', 'D3', 'D4', 'D5', 'D6', 'E1', 'E2', 'E3', 'F1', 'F2', 'F3', 'G4', 'G5'} any
-(:PSHP organization code 08265978:)
-(: Tampereen yliopistollisen sairaalan erityisvastuualue:)
-(: TAYS ERVA:)
+where $record/workflow/@workflowStep contains text {"validated","revalidated"} any and $okm_class contains text {'A1', 'A2', 'A3', 'A4', 'B1', 'B2', 'B3', 'C1', 'C2', 'D1', 'D2', 'D3', 'D4', 'D5', 'D6', 'E1', 'E2', 'E3', 'F1', 'F2', 'F3', 'G4', 'G5'} any
+
 return
 <Julkaisu>
-  <OrganisaatioTunnus>10122</OrganisaatioTunnus>
+  <OrganisaatioTunnus>{$org_code($organisation)}</OrganisaatioTunnus>
   <JulkaisunTilaKoodi>2</JulkaisunTilaKoodi>
   <JulkaisunOrgTunnus>{$internal_identifier}</JulkaisunOrgTunnus>
   {$internal_organizations}
@@ -971,6 +981,6 @@ return
   </Julkaisu>
 }</Julkaisut>
 
-return file:write("/Users/ccmala/Documents/2021/pure-dataload/pshp-to-virta.xml",$selected)
+return file:write($path || $filename($organisation),$selected)
 
 
