@@ -35,89 +35,7 @@ declare function local:check-doi($doi) {
 
 declare function local:check-stat-code($stat_code) {
  let $stat_codes:=(
-"1",
-"111",
-"112",
-"113",
-"114",
-"115",
-"116",
-"117",
-"1171",
-"1172",
-"118",
-"1181",
-"1182",
-"1183",
-"1184",
-"119",
-"2",
-"211",
-"212",
-"213",
-"214",
-"215",
-"216",
-"217",
-"218",
-"219",
-"220",
-"221",
-"222",
-"3",
-"311",
-"3111",
-"3112",
-"312",
-"3121",
-"3122",
-"3123",
-"3124",
-"3125",
-"3126",
-"313",
-"314",
-"3141",
-"3142",
-"315",
-"316",
-"317",
-"318",
-"319",
-"4",
-"411",
-"4111",
-"4112",
-"412",
-"413",
-"414",
-"415",
-"5",
-"511",
-"512",
-"513",
-"514",
-"5141",
-"5142",
-"515",
-"516",
-"517",
-"518",
-"519",
-"520",
-"6",
-"611",
-"612",
-"6121",
-"6122",
-"613",
-"6131",
-"6132",
-"614",
-"615",
-"616",
-"9",
-"999")
+'111', '112', '113', '114', '115', '116', '1171', '1172', '1181', '1182', '1183', '1184', '119', '211', '212', '213', '214', '215', '216', '217', '218', '219', '220', '221', '222', '3111', '3112', '3121', '3122', '3123', '3124', '3125', '3126', '313', '3141', '3142', '315', '316', '317', '318', '319', '4111', '4112', '412', '413', '414', '415', '511', '512', '513', '5141', '5142', '515', '516', '517', '518', '519', '520', '611', '6121', '6122', '6131', '6132', '614', '615', '616')
   
   return
     if (index-of($stat_codes,$stat_code)) then
@@ -787,7 +705,7 @@ for $record in //records/*
   let $internal_authors:=
     <Tekijat>{
     
-    for $author in $record/personAssociations/personAssociation/person[@externalIdSource="synchronisedUnifiedPerson" and ../organisationalUnits/organisationalUnit[@externalIdSource="synchronisedUnifiedOrganisation"]/type[./term/text contains text {"Laitos","Hallinto","Sairaalan vastuualue"} any]]/../name
+    for $author in $record/personAssociations/personAssociation/person[../organisationalUnits/organisationalUnit[@externalIdSource="synchronisedUnifiedOrganisation"]/type[./term/text contains text {"Laitos","Hallinto","Sairaalan vastuualue"} any]]/../name
     return 
     <Tekija>
       <Sukunimi>{data($author/lastName)}</Sukunimi>
@@ -798,7 +716,7 @@ for $record in //records/*
   
   let $initial_internal_organizations:=
   <JulkaisunOrgYksikot>{
-   for $org in distinct-values($record/personAssociations/personAssociation/person[@externalIdSource="synchronisedUnifiedPerson"]/../organisationalUnits/organisationalUnit[@externalIdSource="synchronisedUnifiedOrganisation" and type[term/text contains text {"Laitos","Hallinto"} any]]/@externalId)
+   for $org in distinct-values($record/personAssociations/personAssociation/person[../organisationalUnits/organisationalUnit[@externalIdSource="synchronisedUnifiedOrganisation"]/type[./term/text contains text {"Laitos","Hallinto","Sairaalan vastuualue"} any]]/../organisationalUnits/organisationalUnit[@externalIdSource="synchronisedUnifiedOrganisation" and type[term/text contains text {"Laitos","Hallinto","Sairaalan vastuualue"} any]]/@externalId)
     
     return if ($organisations($org)) then 
     <YksikkoKoodi>{$organisations($org)}</YksikkoKoodi>
@@ -879,20 +797,29 @@ for $org in distinct-values($record/personAssociations/personAssociation/person[
     if($self_archived_status contains text {"0","1"} any ) then
   <RinnakkaistallennettuKytkin>{substring-after($record//keywordGroup[@logicalName="SelfArchivedPublication"]/keywordContainers/keywordContainer[1]/structuredKeyword/@uri,"/dk/atira/pure/researchoutput/selfarchivedpublication/")}</RinnakkaistallennettuKytkin>
   
+  let $author_archived_version:=data($record//keywordGroup[@logicalName="archiveAddress"]//freeKeyword//freeKeyword[. contains text "http" using fuzzy][1])
+  let $other_archived_version:=data($record//electronicVersion[accessType/@uri contains text {'/dk/atira/pure/core/openaccesspermission/embargoed','/dk/atira/pure/core/openaccesspermission/open','/dk/atira/pure/core/openaccesspermission/unknown'} any]/link[. contains text "urn" using fuzzy])
+  let $self_archived_version:=($author_archived_version,$other_archived_version)[1]
+  
   let $self_archived_content:= if(contains($self_archived_status,"1")) then
   <Rinnakkaistallennettu>
-    <RinnakkaistallennusOsoiteTeksti>{data($record//electronicVersion[accessType/@uri contains text {'/dk/atira/pure/core/openaccesspermission/embargoed','/dk/atira/pure/core/openaccesspermission/open'} any]/link)}</RinnakkaistallennusOsoiteTeksti>
+    <RinnakkaistallennusOsoiteTeksti>{data($self_archived_version)}</RinnakkaistallennusOsoiteTeksti>
   </Rinnakkaistallennettu>
   
   let $conference:=
     if($record/event[type/@uri="/dk/atira/pure/event/eventtypes/event/conference"]/name/text) then
       <KonferenssinNimi>{data($record/event[type/@uri="/dk/atira/pure/event/eventtypes/event/conference"]/name/text)}</KonferenssinNimi>
+     else if ($record/event[type/@uri="/dk/atira/pure/event/eventtypes/event/workshop"]/name/text) then
+     <KonferenssinNimi>{data($record/event[type/@uri="/dk/atira/pure/event/eventtypes/event/workshop"]/name/text)}</KonferenssinNimi>
+     else if ($record/event[type/@uri="/dk/atira/pure/event/eventtypes/event/seminar"]/name/text) then
+     <KonferenssinNimi>{data($record/event[type/@uri="/dk/atira/pure/event/eventtypes/event/seminar"]/name/text)}</KonferenssinNimi>
+     
   
   let $isbns:=for $isbn in distinct-values(($record/isbns/isbn, $record/electronicIsbns/electronicIsbn))
       return <ISBN>{local:check-isbn($isbn)}</ISBN> 
   
   let $jufoid:=distinct-values(functx:get-matches(substring-after(lower-case(string-join($record/bibliographicalNote/text,";")),"jufoid="),"\d{1,7}"))[1]
-  let $jufo:= if(string-length($jufoid) <=5 ) then
+  let $jufo:= if(string-length($jufoid) <=5 and string-length($jufoid) > 1) then
     <JufoTunnus>{$jufoid}</JufoTunnus>
   
   let $international_collab:= 
@@ -905,7 +832,7 @@ for $org in distinct-values($record/personAssociations/personAssociation/person[
   if ($record//structuredKeyword/@uri="/dk/atira/pure/researchoutput/copublicationwithacompany/1" and $organisation = "TAU") then
     <YhteisjulkaisuYritysKytkin>1</YhteisjulkaisuYritysKytkin>
   else if ($record//structuredKeyword/@uri="/dk/atira/pure/researchoutput/copublicationwithacompany/1" and $organisation = "PSHP" and (not(empty($internal_company_collabs)) and empty($companies))) then
-  <YhteisjulkaisuYritysKytkin orig="1">0</YhteisjulkaisuYritysKytkin>
+  <YhteisjulkaisuYritysKytkin>0</YhteisjulkaisuYritysKytkin>
   else if ($record//structuredKeyword/@uri="/dk/atira/pure/researchoutput/copublicationwithacompany/1" and $organisation = "PSHP" and not(empty($companies))) then
   <YhteisjulkaisuYritysKytkin>1</YhteisjulkaisuYritysKytkin>
   
@@ -970,8 +897,6 @@ return
   {$language}
   {$open_access}
   {$company_collab}
-  <InternalCompany>{$internal_company_collabs}</InternalCompany>
-  <Companies>{$companies}</Companies>
   {$self_archived_switch}
   {$self_archived_content}
   {$doi}
