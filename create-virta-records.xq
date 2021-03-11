@@ -3,7 +3,7 @@ declare namespace julkaisut = "urn:mace:funet.fi:julkaisut/2015/03/01";
 import module namespace functx = 'http://www.functx.com';
 import module namespace isbn = "http://github.com/holmesw/isbn" at "isbn.xqm";
 
-declare variable $organisation external:="TAU";
+declare variable $organisation external:="PSHP";
 declare variable $path external:="/Users/ccmala/Documents/2021/pure-dataload/";
 
 declare function local:check-isbn($isbn) {
@@ -183,58 +183,58 @@ map:entry("PHSO01_hospitaldepartment_2009-01-01","08265978"),
 map:entry("PPSHP_hospital_2015-01-01","08265978"),
 map:entry("PSGY_hospitaldepartment_1997-01-01","08265978"),
 map:entry("PSHP_hospitaldistrict_1994-01-01","08265978"),
-map:entry("PSHP01_hospitaldepartment_2008-01-01","JV80"),
-map:entry("PSHP02_hospitaldepartment_2008-01-01","JV81"),
-map:entry("PSHP03_hospitaldepartment_2016-01-01","JV82"),
-map:entry("PSHP04_hospitaldepartment_2008-01-01","JV83"),
-map:entry("PSHP05_hospitaldepartment_2008-01-01","JV84"),
-map:entry("PSHP06_hospitaldepartment_2008-01-01","JV85"),
-map:entry("PSHP07_hospitaldepartment_2008-01-01","JV86"),
-map:entry("PSHP09_hospitaldepartment_2008-01-01","JV90"),
-map:entry("PSHP10_hospitaldepartment_2011-01-01","JV91"),
-map:entry("PSHP11_hospitaldepartment_2010-01-01","JV92"),
-map:entry("PSHP12_hospitaldepartment_2011-01-01","JV93"),
-map:entry("PSHP13_hospitaldepartment_2008-01-01","JV94"),
-map:entry("PSHP14_hospitaldepartment_2008-01-01","JV95"),
-map:entry("PSHP15_hospitaldepartment_2011-01-01","JV96"),
-map:entry("PSHP16_hospitaldepartment_2010-01-01","JV97"),
-map:entry("PSHP17_hospitaldepartment_2009-01-01","novalue"),
-map:entry("PSHP18_hospitaldepartment_2011-01-01","JV115"),
-map:entry("PSHP20_hospitaldepartment_2013-01-01","JV133"),
-map:entry("PSHP21_hospitaldepartment_2013-01-01","JV134"),
-map:entry("pshp22_hospitaldepartment_2014-01-01","JV137"),
-map:entry("PSHP23_hospitaldepartment_2008-01-01","JV138"),
-map:entry("PSKA_hospitaldepartment_2000-01-01","JV37"),
-map:entry("PSSP_hospitaldepartment_2000-01-01","JV36"),
-map:entry("PSYK_hospitaldepartment_2005-01-01",30),
-map:entry("PSYN_hospitaldepartment_2005-01-01",50),
-map:entry("RSS_hospital_2008-01-01","JS11"),
-map:entry("RSS01_hospitaldepartment_2008-01-01","JV112"),
-map:entry("SAPT_hospitaldepartment_1994-01-01","novalue"),
-map:entry("SDIA_hospitaldepartment_2009-01-01",43),
-map:entry("SEKS_hospital_2008-01-01","JS2"),
-map:entry("SEKS01_hospitaldepartment_2008-01-01","JV62"),
-map:entry("SIKS_hospitaldepartment_2011-01-01",23),
-map:entry("SILT_hospitaldepartment_1997-01-01","JV8"),
-map:entry("SIST_hospitaldepartment_2005-01-01",20),
-map:entry("SKS_hospitaldepartment_2005-01-01",13),
-map:entry("SYD_hospitaldivision_2005-01-01","JT40"),
-map:entry("SYK_hospitaldepartment_2005-01-01","JV40"),
-map:entry("SYÖP_hospitaldepartment_2019-01-01",952),
-map:entry("SYÖT_hospitaldepartment_2005-01-01",25),
-map:entry("TA1_hospitaldivision_1994-01-01","S"),
-map:entry("TA2_hospitaldivision_1994-01-01","G"),
-map:entry("TA2K_hospitaldepartment_2005-01-01",29),
-map:entry("TA3_hospitaldivision_1994-01-01","N"),
-map:entry("TA4_hospitaldivision_1994-01-01","C"),
-map:entry("TA5_hospitaldivision_1994-01-01","P"),
-map:entry("TA6_hospitaldivision_1994-01-01","V"),
-map:entry("TA7_hospitaldivision_1994-01-01","E"),
-map:entry("TA8_hospitaldivision_1994-01-01","JT98"),
-map:entry("TAYS_hospital_1994-01-01","S1"),
-map:entry("TAYServa_catchmentarea_1994-01-01",8265978),
-map:entry("TEHO_hospitaldepartment_2005-01-01",38),
-map:entry("TEK_hospitaldepartment_1997-01-01","novalue"),
+map:entry("PSHP01_hospitaldepartment_2008-01-01","08265978"),
+map:entry("PSHP02_hospitaldepartment_2008-01-01","08265978"),
+map:entry("PSHP03_hospitaldepartment_2016-01-01","08265978"),
+map:entry("PSHP04_hospitaldepartment_2008-01-01","08265978"),
+map:entry("PSHP05_hospitaldepartment_2008-01-01","08265978"),
+map:entry("PSHP06_hospitaldepartment_2008-01-01","08265978"),
+map:entry("PSHP07_hospitaldepartment_2008-01-01","08265978"),
+map:entry("PSHP09_hospitaldepartment_2008-01-01","08265978"),
+map:entry("PSHP10_hospitaldepartment_2011-01-01","08265978"),
+map:entry("PSHP11_hospitaldepartment_2010-01-01","08265978"),
+map:entry("PSHP12_hospitaldepartment_2011-01-01","08265978"),
+map:entry("PSHP13_hospitaldepartment_2008-01-01","08265978"),
+map:entry("PSHP14_hospitaldepartment_2008-01-01","08265978"),
+map:entry("PSHP15_hospitaldepartment_2011-01-01","08265978"),
+map:entry("PSHP16_hospitaldepartment_2010-01-01","08265978"),
+map:entry("PSHP17_hospitaldepartment_2009-01-01","08265978"),
+map:entry("PSHP18_hospitaldepartment_2011-01-01","08265978"),
+map:entry("PSHP20_hospitaldepartment_2013-01-01","08265978"),
+map:entry("PSHP21_hospitaldepartment_2013-01-01","08265978"),
+map:entry("pshp22_hospitaldepartment_2014-01-01","08265978"),
+map:entry("PSHP23_hospitaldepartment_2008-01-01","08265978"),
+map:entry("PSKA_hospitaldepartment_2000-01-01","08265978"),
+map:entry("PSSP_hospitaldepartment_2000-01-01","08265978"),
+map:entry("PSYK_hospitaldepartment_2005-01-01","08265978"),
+map:entry("PSYN_hospitaldepartment_2005-01-01","08265978"),
+map:entry("RSS_hospital_2008-01-01","08265978"),
+map:entry("RSS01_hospitaldepartment_2008-01-01","08265978"),
+map:entry("SAPT_hospitaldepartment_1994-01-01","08265978"),
+map:entry("SDIA_hospitaldepartment_2009-01-01","08265978"),
+map:entry("SEKS_hospital_2008-01-01","08265978"),
+map:entry("SEKS01_hospitaldepartment_2008-01-01","08265978"),
+map:entry("SIKS_hospitaldepartment_2011-01-01","08265978"),
+map:entry("SILT_hospitaldepartment_1997-01-01","08265978"),
+map:entry("SIST_hospitaldepartment_2005-01-01","08265978"),
+map:entry("SKS_hospitaldepartment_2005-01-01","08265978"),
+map:entry("SYD_hospitaldivision_2005-01-01","08265978"),
+map:entry("SYK_hospitaldepartment_2005-01-01","08265978"),
+map:entry("SYÖP_hospitaldepartment_2019-01-01","08265978"),
+map:entry("SYÖT_hospitaldepartment_2005-01-01","08265978"),
+map:entry("TA1_hospitaldivision_1994-01-01","08265978"),
+map:entry("TA2_hospitaldivision_1994-01-01","08265978"),
+map:entry("TA2K_hospitaldepartment_2005-01-01","08265978"),
+map:entry("TA3_hospitaldivision_1994-01-01","08265978"),
+map:entry("TA4_hospitaldivision_1994-01-01","08265978"),
+map:entry("TA5_hospitaldivision_1994-01-01","08265978"),
+map:entry("TA6_hospitaldivision_1994-01-01","08265978"),
+map:entry("TA7_hospitaldivision_1994-01-01","08265978"),
+map:entry("TA8_hospitaldivision_1994-01-01","08265978"),
+map:entry("TAYS_hospital_1994-01-01","08265978"),
+map:entry("TAYServa_catchmentarea_1994-01-01","08265978"),
+map:entry("TEHO_hospitaldepartment_2005-01-01","08265978"),
+map:entry("TEK_hospitaldepartment_1997-01-01","08265978"),
 map:entry("TKA_1_2008-01-01",1),
 map:entry("TKA_10_2013-01-01",10),
 map:entry("TKA_1010_2018-10-01",1010),
@@ -290,7 +290,7 @@ map:entry("TKA_MED_2017-01-01",2501),
 map:entry("TKA_SIS_2011-01-01",2502),
 map:entry("TKA_SOC_2017-01-01",2509),
 map:entry("TKA_YKY_2011-01-01",2509),
-map:entry("TKI_hospitaldepartment_1994-01-01",96),
+map:entry("TKI_hospitaldepartment_1994-01-01","08265978"),
 map:entry("TR_10_2013-01-01",10),
 map:entry("TR_100_2014-12-11",100),
 map:entry("TR_101_2014-12-12",101),
@@ -576,14 +576,14 @@ map:entry("TR_92_2015-01-01",92),
 map:entry("TR_93_2015-01-01",93),
 map:entry("TR_94_2015-01-01",94),
 map:entry("TR_95_2015-01-01",95),
-map:entry("TR_96_2014-12-11",96),
+map:entry("TR_96_2014-12-11","08265978"),
 map:entry("TR_97_2014-12-11",97),
 map:entry("TR_98_2014-12-11",98),
 map:entry("TR_99_2014-12-11",99),
 map:entry("TR_99_2015-08-01",99),
-map:entry("TUKI_hospitaldepartment_2016-01-01","V2"),
-map:entry("TULE_hospitaldepartment_2005-01-01",17),
-map:entry("TUTK_hospitaldepartment_1997-01-01","JV2"),
+map:entry("TUKI_hospitaldepartment_2016-01-01","08265978"),
+map:entry("TULE_hospitaldepartment_2005-01-01","08265978"),
+map:entry("TUTK_hospitaldepartment_1997-01-01","08265978"),
 map:entry("UNI_1_2018-10-01",1),
 map:entry("UNI_T1_2019-01-01","T1"),
 map:entry("uta-tohjelma-1703","DPEDU"),
@@ -598,9 +598,9 @@ map:entry("uta-tohjelma-1781","DPHI"),
 map:entry("uta-tohjelma-1782","DPPL"),
 map:entry("uta-tohjelma-1783","DPYT"),
 map:entry("uta-tohjelma-1788","DPPH"),
-map:entry("VALS_hospitaldivision_1994-01-01",8),
-map:entry("VAS_hospitaldivision_1994-01-01",7),
-map:entry("VETO_hospitaldepartment_2019-01-01",47),
+map:entry("VALS_hospitaldivision_1994-01-01","08265978"),
+map:entry("VAS_hospitaldivision_1994-01-01","08265978"),
+map:entry("VETO_hospitaldepartment_2019-01-01","08265978"),
 map:entry("VKS_hospital_2009-01-01","JS9"),
 map:entry("VKS01_hospitaldepartment_2009-01-01","JV100"),
 map:entry("VPSY_hospitaldepartment_2003-01-01","JV39"),
@@ -616,12 +616,24 @@ map:entry("VSHP08_hospitaldepartment_2009-01-01","JV108"),
 map:entry("VSHP09_hospitaldepartment_2009-01-01","JV109"),
 map:entry("VSHP10_hospitaldepartment_2009-01-01","JV110"),
 map:entry("VSHP11_hospitaldepartment_2009-01-01","JV130"),
-map:entry("VVS_hospital_2008-01-01","JS10"),
-map:entry("VVS01_hospitaldepartment_2008-01-01","JV111"),
-map:entry("YHTH_hospitaldivision_1994-01-01",9),
-map:entry("YLHV_hospitaldepartment_2005-01-01","9B"),
-map:entry("YLLA_hospitaldepartment_2009-01-01",99),
-map:entry("YPTH01_hospitaldepartment_2009-01-01","novalue")
+map:entry("VVS_hospital_2008-01-01","08265978"),
+map:entry("VVS01_hospitaldepartment_2008-01-01","08265978"),
+map:entry("YHTH_hospitaldivision_1994-01-01","08265978"),
+map:entry("YLHV_hospitaldepartment_2005-01-01","08265978"),
+map:entry("YLLA_hospitaldepartment_2009-01-01","08265978"),
+map:entry("YPTH01_hospitaldepartment_2009-01-01","08265978"),
+map:entry("LAST_hospitaldepartment_2005-01-01","08265978"),
+map:entry("NASY_hospitaldepartment_2005-01-01","08265978"),
+map:entry("NIKU_hospitaldepartment_2005-01-01","08265978"),
+map:entry("NUPS_hospitaldepartment_2005-01-01","08265978"),
+map:entry("PIKE_hospitaldepartment_2005-01-01","08265978"),
+map:entry("LAPS_hospitaldepartment_2005-01-01","08265978"),
+map:entry("LAI_LAS_2017-01-01","08265978"),
+map:entry("KUPS_hospitaldepartment_2021-01-01","08265978"),
+map:entry("SAPT_hospitaldepartment_1999-01-01","08265978"),
+map:entry("VA_SYNN_1972-01-01","08265978")
+
+
 ))
 
 let $hospital_companies:=(
@@ -705,7 +717,7 @@ for $record in //records/*
   let $internal_authors:=
     <Tekijat>{
     
-    for $author in $record/personAssociations/personAssociation/person[../organisationalUnits/organisationalUnit[@externalIdSource="synchronisedUnifiedOrganisation"]/type[./term/text contains text {"Laitos","Hallinto","Sairaalan vastuualue"} any]]/../name
+    for $author in $record/personAssociations/personAssociation/person[../organisationalUnits/organisationalUnit/type[./term/text contains text {"Laitos","Hallinto","Sairaalan vastuualue"} any]]/../name
     return 
     <Tekija>
       <Sukunimi>{data($author/lastName)}</Sukunimi>
@@ -716,7 +728,7 @@ for $record in //records/*
   
   let $initial_internal_organizations:=
   <JulkaisunOrgYksikot>{
-   for $org in distinct-values($record/personAssociations/personAssociation/person[../organisationalUnits/organisationalUnit[@externalIdSource="synchronisedUnifiedOrganisation"]/type[./term/text contains text {"Laitos","Hallinto","Sairaalan vastuualue"} any]]/../organisationalUnits/organisationalUnit[@externalIdSource="synchronisedUnifiedOrganisation" and type[term/text contains text {"Laitos","Hallinto","Sairaalan vastuualue"} any]]/@externalId)
+   for $org in distinct-values($record/personAssociations/personAssociation/person[../organisationalUnits/organisationalUnit/type[./term/text contains text {"Laitos","Hallinto","Sairaalan vastuualue"} any]]/../organisationalUnits/organisationalUnit[type[term/text contains text {"Laitos","Hallinto","Sairaalan vastuualue"} any]]/@externalId)
     
     return if ($organisations($org)) then 
     <YksikkoKoodi>{$organisations($org)}</YksikkoKoodi>
@@ -798,7 +810,7 @@ for $org in distinct-values($record/personAssociations/personAssociation/person[
   <RinnakkaistallennettuKytkin>{substring-after($record//keywordGroup[@logicalName="SelfArchivedPublication"]/keywordContainers/keywordContainer[1]/structuredKeyword/@uri,"/dk/atira/pure/researchoutput/selfarchivedpublication/")}</RinnakkaistallennettuKytkin>
   
   let $author_archived_version:=data($record//keywordGroup[@logicalName="archiveAddress"]//freeKeyword//freeKeyword[. contains text "http" using fuzzy][1])
-  let $other_archived_version:=data($record//electronicVersion[accessType/@uri contains text {'/dk/atira/pure/core/openaccesspermission/embargoed','/dk/atira/pure/core/openaccesspermission/open','/dk/atira/pure/core/openaccesspermission/unknown'} any]/link[. contains text "urn" using fuzzy])
+  let $other_archived_version:=data($record//electronicVersion[accessType/@uri contains text {'/dk/atira/pure/core/openaccesspermission/embargoed','/dk/atira/pure/core/openaccesspermission/open','/dk/atira/pure/core/openaccesspermission/unknown'} any]/link[. contains text {"urn","repository","hdl.handle","researchportal"} any using fuzzy])
   let $self_archived_version:=($author_archived_version,$other_archived_version)[1]
   
   let $self_archived_content:= if(contains($self_archived_status,"1")) then
@@ -839,7 +851,7 @@ for $org in distinct-values($record/personAssociations/personAssociation/person[
   else if ($record//structuredKeyword/@uri="/dk/atira/pure/researchoutput/copublicationwithacompany/0") then
      <YhteisjulkaisuYritysKytkin>0</YhteisjulkaisuYritysKytkin>
   
-  let $publisher_url:=$record//electronicVersion[versionType/@uri="/dk/atira/pure/researchoutput/electronicversion/versiontype/publishersversion"]
+  let $publisher_url:=$record//electronicVersion[versionType/@uri="/dk/atira/pure/researchoutput/electronicversion/versiontype/publishersversion"][1]
   
   let $permanent_url:=if($publisher_url/doi) then
     <PysyvaOsoiteTeksti>{data(local:check-doi($publisher_url/doi))}</PysyvaOsoiteTeksti>
