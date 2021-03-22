@@ -1,3 +1,7 @@
+# Creates publishers.xml needed when transforming C2 and E3
+# publication data
+# Run this script first.
+
 SET STRIPNS true
 SET INTPARSE true
 SET parser xml
