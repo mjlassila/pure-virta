@@ -3,7 +3,7 @@ declare namespace julkaisut = "urn:mace:funet.fi:julkaisut/2015/03/01";
 import module namespace functx = 'http://www.functx.com';
 import module namespace isbn = "http://github.com/holmesw/isbn" at "isbn.xqm";
 
-declare variable $organisation external:="PSHP";
+declare variable $organisation external:="TAU";
 declare variable $path external:="/Users/ccmala/Documents/2021/pure-dataload/";
 
 declare function local:check-isbn($isbn) {
@@ -33,6 +33,21 @@ declare function local:check-doi($doi) {
    )
 };
 
+declare function local:fetch-publisher($issns) {
+  let $publisher:=distinct-values(for $issn in $issns
+    let $publisher:=db:open("virta")/publishers/record[issn eq $issn]/publisher
+    return $publisher)[1]
+    
+  return
+    if ($publisher) then
+     <KustantajanNimi>{$publisher}</KustantajanNimi>
+    else(
+      <KustantajanNimi>ERROR PUBLISHER MISSING</KustantajanNimi>
+    )
+  
+};
+
+
 declare function local:check-stat-code($stat_code) {
  let $stat_codes:=(
 '111', '112', '113', '114', '115', '116', '1171', '1172', '1181', '1182', '1183', '1184', '119', '211', '212', '213', '214', '215', '216', '217', '218', '219', '220', '221', '222', '3111', '3112', '3121', '3122', '3123', '3124', '3125', '3126', '313', '3141', '3142', '315', '316', '317', '318', '319', '4111', '4112', '412', '413', '414', '415', '511', '512', '513', '5141', '5142', '515', '516', '517', '518', '519', '520', '611', '6121', '6122', '6131', '6132', '614', '615', '616')
@@ -54,6 +69,16 @@ let $filename:=map:merge((
 let $org_code:=map:merge((
   map:entry("PSHP","08265978"),
   map:entry("TAU","10122")
+))
+
+(: Map for missing publishers:)
+
+let $lookup_publisher:=map:merge((
+  map:entry("b9c1691d-d504-4e71-b63d-c31764e91ebe","Prologos"),
+  map:entry("00dcd17b-a4cd-407c-8da8-95596d0f2cb7", "Prologos"),
+  map:entry("f78f1365-0b88-4709-bcec-e9491bcf7d73","German as a Foreign Language"),
+  map:entry("38ac3a62-589f-43c1-a891-970705e59e93","Ephemera Collective"),
+  map:entry("977e8fd1-9575-4f10-b4fa-ee07f9649391","Sukupuolentutkimuksen seura – Sällskapet för genusforskning ry")
 ))
 
 (: Map structure is substantially faster for looking up organisation codes
@@ -744,10 +769,13 @@ for $record in //records/*
   }</JulkaisunOrgYksikot>
   
   let $internal_organizations:=
+  if ($organisation eq 'TAU') then
   <JulkaisunOrgYksikot> {
     for $org in distinct-values($initial_internal_organizations/YksikkoKoodi)
+    where not($org eq '08265978')
     return <YksikkoKoodi>{$org}</YksikkoKoodi>
   }</JulkaisunOrgYksikot>
+  else()
     
 
  let $internal_organisation_codes:= for $org in distinct-values($record/personAssociations/personAssociation/person[@externalIdSource="synchronisedUnifiedPerson"]/../organisationalUnits/organisationalUnit[type[term/text contains text {"Laitos","Hallinto","Sairaalan vastuualue"} any]]/@externalId)
@@ -762,11 +790,11 @@ for $org in distinct-values($record/personAssociations/personAssociation/person[
 
   
   let $open_access:= <AvoinSaatavuusKoodi>{
-    if ($record//structuredKeyword/@uri="/dk/atira/pure/researchoutput/openaccesspublication/1") then
+    if ($record//structuredKeyword/@uri="/dk/atira/pure/researchoutput/openaccess/1") then
     '1'
-    else if ($record//structuredKeyword/@uri="/dk/atira/pure/researchoutput/openaccesspublication/0") then
+    else if ($record//structuredKeyword/@uri="/dk/atira/pure/researchoutput/openaccess/0") then
     '0'
-    else if ($record//structuredKeyword/@uri="/dk/atira/pure/researchoutput/openaccesspublication/2") then
+    else if ($record//structuredKeyword/@uri="/dk/atira/pure/researchoutput/openaccess/2") then
     '2'
     else '0'
     }</AvoinSaatavuusKoodi>
@@ -788,29 +816,33 @@ for $org in distinct-values($record/personAssociations/personAssociation/person[
     else if (string-length($record/journalAssociation)>1) then
     <LehdenNimi>{data($record/journalAssociation/title)}</LehdenNimi>
     
+  let $raw_issns:=distinct-values(($record/publicationSeries/publicationSerie/issn,$record/journalAssociation/issn,$record/publicationSeries/publicationSerie/electronicIssn,$record/journalAssociation/electronicIssn)) 
+    
   let $issns:=
-    if ($record/publicationSeries/publicationSerie/issn) then
-      <ISSN>{data($record/publicationSeries/publicationSerie/issn)}</ISSN>
-    else if  ($record/journalAssociation/issn) then
-      <ISSN>{data($record/journalAssociation/issn)}</ISSN>
-    else if ($record/publicationSeries/publicationSerie/electronicIssn) then
-      <ISSN>{data($record/publicationSeries/publicationSerie/electronicIssn)}</ISSN>
-    else if  ($record/journalAssociation/electronicIssn) then
-      <ISSN>{data($record/journalAssociation/electronicIssn)}</ISSN>
+    for $issn in $raw_issns return
+    <ISSN>{$issn}</ISSN>
    
   let $internal_identifier:=data($record/@uuid)
   
   let $doi:=if($record//electronicVersion[@type="wsElectronicVersionDoiAssociation"][1]/doi) then
     <DOI>{substring-after($record//electronicVersion[@type="wsElectronicVersionDoiAssociation"][1]/doi[1],(".org/"))}</DOI>
     
-  let $self_archived_status:= substring-after($record//keywordGroup[@logicalName="SelfArchivedPublication"]/keywordContainers/keywordContainer[1]/structuredKeyword/@uri,"/dk/atira/pure/researchoutput/selfarchivedpublication/")
+  let $self_archived_status:= 
+    for $status in $record//keywordGroup[@logicalName="SelfArchivedPublication"]/keywordContainers/keywordContainer/structuredKeyword
+    let $indicator:=substring-after($status/@uri,"/dk/atira/pure/researchoutput/selfarchivedpublication/")
+    where $indicator contains text {"0","1"} any
+    return $indicator
+  
+  (:let $self_archived_switch:=
+    if($self_archived_status contains text {"0","1"} any ) then
+  <RinnakkaistallennettuKytkin>{substring-after($record//keywordGroup[@logicalName="SelfArchivedPublication"]/keywordContainers/keywordContainer[not(./structuredKeyword/@uri contains text "/dk/atira/pure/researchoutput/selfarchivedpublication/checking")]/structuredKeyword/@uri,"/dk/atira/pure/researchoutput/selfarchivedpublication/")}</RinnakkaistallennettuKytkin>:)
   
   let $self_archived_switch:=
-    if($self_archived_status contains text {"0","1"} any ) then
-  <RinnakkaistallennettuKytkin>{substring-after($record//keywordGroup[@logicalName="SelfArchivedPublication"]/keywordContainers/keywordContainer[1]/structuredKeyword/@uri,"/dk/atira/pure/researchoutput/selfarchivedpublication/")}</RinnakkaistallennettuKytkin>
+  if($self_archived_status) then
+  <RinnakkaistallennettuKytkin>{$self_archived_status}</RinnakkaistallennettuKytkin>
   
   let $author_archived_version:=data($record//keywordGroup[@logicalName="archiveAddress"]//freeKeyword//freeKeyword[. contains text "http" using fuzzy][1])
-  let $other_archived_version:=data($record//electronicVersion[accessType/@uri contains text {'/dk/atira/pure/core/openaccesspermission/embargoed','/dk/atira/pure/core/openaccesspermission/open','/dk/atira/pure/core/openaccesspermission/unknown'} any]/link[. contains text {"urn","repository","hdl.handle","researchportal"} any using fuzzy])
+  let $other_archived_version:=data($record//electronicVersion[accessType/@uri contains text {'/dk/atira/pure/core/openaccesspermission/embargoed','/dk/atira/pure/core/openaccesspermission/open','/dk/atira/pure/core/openaccesspermission/unknown'} any]/link[. contains text {"urn","repository","hdl.handle","researchportal","thinkmind.org"} any using fuzzy])
   let $self_archived_version:=($author_archived_version,$other_archived_version)[1]
   
   let $self_archived_content:= if(contains($self_archived_status,"1")) then
@@ -835,10 +867,16 @@ for $org in distinct-values($record/personAssociations/personAssociation/person[
     <JufoTunnus>{$jufoid}</JufoTunnus>
   
   let $international_collab:= 
-    if ($record//structuredKeyword/@uri="/dk/atira/pure/researchoutput/typeofcopublication/internationalcopublication/1") then
+    if ($record//structuredKeyword/@uri="/dk/atira/pure/researchoutput/internationalcopublication/1") then
       <YhteisjulkaisuKVKytkin>1</YhteisjulkaisuKVKytkin>
-    else if($record//structuredKeyword/@uri="/dk/atira/pure/researchoutput/typeofcopublication/internationalcopublication/0") then
+    else if($record//structuredKeyword/@uri="/dk/atira/pure/researchoutput/internationalcopublication/0") then
       <YhteisjulkaisuKVKytkin>0</YhteisjulkaisuKVKytkin>
+      
+  (:let $international_publisher:= 
+    if ($record//structuredKeyword/@uri="/dk/atira/pure/researchoutput/internationalpublisher/1") then
+      <JulkaisunKansainvalisyysKytkin>1</JulkaisunKansainvalisyysKytkin>
+    else if($record//structuredKeyword/@uri="/dk/atira/pure/researchoutput/internationalpublisher/0") then
+      <JulkaisunKansainvalisyysKytkin>0</JulkaisunKansainvalisyysKytkin>:)
   
   let $company_collab:= 
   if ($record//structuredKeyword/@uri="/dk/atira/pure/researchoutput/copublicationwithacompany/1" and $organisation = "TAU") then
@@ -868,6 +906,10 @@ for $org in distinct-values($record/personAssociations/personAssociation/person[
   
   let $publisher:=if($record/publisher[1]/name/text) then
     <KustantajanNimi>{data($record/publisher[1]/name/text)}</KustantajanNimi>
+    else if ($lookup_publisher($internal_identifier))then
+      <KustantajanNimi>{$lookup_publisher($internal_identifier)}</KustantajanNimi>
+    else if ($okm_class contains text {'C2',"E3"} any) then
+      local:fetch-publisher($issns)
   
   let $sourcedb_ids:=
     if ($record//additionalExternalIds/id[@idSource contains text {"Scopus","WOS"} any]) then
@@ -875,16 +917,20 @@ for $org in distinct-values($record/personAssociations/personAssociation/person[
       return $id/@idSource ||':'|| $id),';' )}</LahdetietokannanTunnus>
     
    
-    
-    
+let $soleid:= data($record//additionalExternalIds/id[@idSource contains text "Sole"])
+ 
+let $publication_id:=
+  if($record//additionalExternalIds/id[@idSource contains text "Sole"] and $organisation eq "TAU") then data($record//additionalExternalIds/id[@idSource contains text "Sole"])
+    else(
+      $internal_identifier)
 
-where $record/workflow/@workflowStep contains text {"validated","revalidated"} any and $okm_class contains text {'A1', 'A2', 'A3', 'A4', 'B1', 'B2', 'B3', 'C1', 'C2', 'D1', 'D2', 'D3', 'D4', 'D5', 'D6', 'E1', 'E2', 'E3', 'F1', 'F2', 'F3', 'G4', 'G5'} any
+where $record/workflow/@workflowStep contains text {"validated","revalidated"} any and $okm_class contains text {'A1', 'A2', 'A3', 'A4', 'B1', 'B2', 'B3', 'C1', 'C2', 'D1', 'D2', 'D3', 'D4', 'D5', 'D6', 'E1', 'E2', 'E3', 'G4', 'G5'} any
 
 return
 <Julkaisu>
   <OrganisaatioTunnus>{$org_code($organisation)}</OrganisaatioTunnus>
   <JulkaisunTilaKoodi>2</JulkaisunTilaKoodi>
-  <JulkaisunOrgTunnus>{$internal_identifier}</JulkaisunOrgTunnus>
+  <JulkaisunOrgTunnus>{$publication_id}</JulkaisunOrgTunnus>
   {$internal_organizations}
   <JulkaisuVuosi>{$publication_year}</JulkaisuVuosi>
   <JulkaisunNimi>{$title}</JulkaisunNimi>
