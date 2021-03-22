@@ -10,7 +10,7 @@ declare variable $organisation external:="PSHP";
 declare variable $path external:="/Users/ccmala/Documents/2021/pure-dataload/";
 
 declare function local:check-publisher($record) {
-  if($record[JulkaisutyyppiKoodi contains text {'A3', 'B2', 'C1',  'D2', 'D4', 'D5', 'D6', 'E2'} any and empty($record/KustantajanNimi)]) then
+  if($record[JulkaisutyyppiKoodi contains text {'A3', 'B2', 'C1',  'D2', 'D4', 'D5', 'D6', 'E2','C2','E3'} any and empty($record/KustantajanNimi)]) then
   <publisher_missing>true</publisher_missing>
 };
 
@@ -117,4 +117,6 @@ let $csv:=<csv>{
 }</csv>
 
 return file:write($path || lower-case($organisation) || "-" || "missing-fields.csv",$csv,$params)
+
+
 
