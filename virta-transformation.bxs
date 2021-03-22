@@ -9,21 +9,24 @@ RUN /Users/ccmala/Documents/2021/pure-dataload/filter-by-year-tau.xq
 RUN /Users/ccmala/Documents/2021/pure-dataload/filter-by-year-pshp.xq
 SET BINDINGS organisation=TAU
 
-CREATE DB virta-tau
+CREATE DB virta
 ADD /Users/ccmala/Documents/2021/pure-dataload/tau-okm-publications.xml
+ADD /Users/ccmala/Documents/2021/pure-dataload/publishers.xml
 RUN /Users/ccmala/Documents/2021/pure-dataload/create-virta-xml.xq
-DROP DB virta-tau
+DROP DB virta
 
 SET BINDINGS organisation=PSHP
-CREATE DB virta-pshp
+CREATE DB virta
 ADD /Users/ccmala/Documents/2021/pure-dataload/pshp-okm-publications.xml
+ADD /Users/ccmala/Documents/2021/pure-dataload/publishers.xml
 RUN /Users/ccmala/Documents/2021/pure-dataload/create-virta-xml.xq
-DROP DB virta-pshp
+DROP DB virta
 
 SET BINDINGS organisation=TAU
 CREATE DB virta-analytics
 ADD /Users/ccmala/Documents/2021/pure-dataload/virta-tau.xml
 RUN /Users/ccmala/Documents/2021/pure-dataload/uuids-in-okm-class.xq
+RUN /Users/ccmala/Documents/2021/pure-dataload/pubs-in-okm-class.xq
 RUN /Users/ccmala/Documents/2021/pure-dataload/run-tests.xq
 DROP DB virta-analytics
 
@@ -33,4 +36,5 @@ CREATE DB virta-analytics
 ADD /Users/ccmala/Documents/2021/pure-dataload/virta-pshp.xml
 RUN /Users/ccmala/Documents/2021/pure-dataload/uuids-in-okm-class.xq
 RUN /Users/ccmala/Documents/2021/pure-dataload/run-tests.xq
+RUN /Users/ccmala/Documents/2021/pure-dataload/pubs-in-okm-class.xq
 DROP DB virta-analytics
