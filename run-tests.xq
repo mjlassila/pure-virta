@@ -1,3 +1,7 @@
+(: Check if created data meets some of thevalidity rules defined in :)
+(: https://wiki.eduuni.fi/display/cscvirtajtp/Julkaisun+tila :)
+(: Please note that not all rules are implemented here :)
+
 declare option output:method "csv";
 declare option output:csv "header=yes, separator=semicolon";
 
