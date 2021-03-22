@@ -3,6 +3,12 @@ declare namespace julkaisut = "urn:mace:funet.fi:julkaisut/2015/03/01";
 import module namespace functx = 'http://www.functx.com';
 import module namespace isbn = "http://github.com/holmesw/isbn" at "isbn.xqm";
 
+(: Creates VIRTA-compatible XML using data fetched from Pure :)
+(: Scripts needs pre-fetched data from Pure :)
+(: and publishers.xml created using create-supplementary-data.bxs :)
+(: Uses module from http://github.com/holmesw/isbn for checking validity of ISBNs :)
+
+
 declare variable $organisation external:="TAU";
 declare variable $path external:="/Users/ccmala/Documents/2021/pure-dataload/";
 
