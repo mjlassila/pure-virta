@@ -1,3 +1,6 @@
+(: Creates the subset of the dataset fetched from Pure :)
+(: Selects only records relevant to current reporting year :)
+
 let $selected:=
 <records>{
 for $record in //items/*
