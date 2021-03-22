@@ -1,3 +1,5 @@
+(: Creates a checking list grouped by OKM publication class :)
+
 declare option output:method "csv";
 declare option output:csv "header=yes, separator=semicolon";
 
